@@ -76,13 +76,28 @@ a2=[ones(m, 1) a2];
 z3=a2*Theta2';
 a3=sigmoid(z3);
 
+
 logisf=(-y).*log(a3)-(1-y).*log(1-a3); 
 
 Theta1s=Theta1(:,2:end);
 Theta2s=Theta2(:,2:end);
+
 J=((1/m).*sum(sum(logisf)))+(lambda/(2*m)).*(sum(sum(Theta1s.^2))+sum(sum(Theta2s.^2)));
 
+delta_1 = zeros(size(Theta1));
+delta_2 = zeros(size(Theta2));
 
+d3 = a3 - y;                                            
+d2 = (d3*Theta2).*[ones(size(z2,1),1) sigmoidGradient(z2)];     
+
+delta_1 = d2(:,2:end)' * a1;    
+delta_2 = d3' * a2;   
+
+Theta1_grad = 1/m * delta_1;
+Theta2_grad = 1/m * delta_2;
+
+Theta1_grad(:, 2:end) = Theta1_grad(:, 2:end) + lambda / m * Theta1(:, 2:end);
+Theta2_grad(:, 2:end) = Theta2_grad(:, 2:end) + lambda / m * Theta2(:, 2:end);
 
 % -------------------------------------------------------------
 
